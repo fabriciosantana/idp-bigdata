@@ -11,9 +11,14 @@ services:
       - ./notebooks:/home/jovyan/work
       - ./data:/home/jovyan/data
       - ./config:/home/jovyan/.jupyter
+    networks:
+      - bigdatanetwork
 
 volumes:
   notebooks:
   data:
   config:          
-
+networks:
+  bigdatanetwork:
+    external:
+      name: bigdatanetwork

@@ -95,3 +95,6 @@ build/
 # Pastas temporárias do Dropbox
 .dropbox.attr
 .dropbox.attrs
+
+jupyter-spark/notebooks/.ipynb_checkpoints
+jupyter-spark/config/lab/workspaces/default-37a8.jupyterlab-workspace

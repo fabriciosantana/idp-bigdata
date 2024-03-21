@@ -10,10 +10,12 @@ ENV SPARK_VERSION=3.3.3 \
 # Altera para o usuário root para instalar as dependências
 USER root
 
+#https://archive.apache.org/dist/spark/spark-3.3.3/spark-3.3.3-bin-hadoop3.tgz
+
 # Instale as dependências necessárias e baixe/instale o Spark
 RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-11-jdk wget && \
-    wget --no-check-certificate https://downloads.apache.org/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz -O /tmp/spark.tgz && \
+    wget --no-check-certificate https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz -O /tmp/spark.tgz && \
     tar xzvf /tmp/spark.tgz -C /usr/local/ && \
     mv /usr/local/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION $SPARK_HOME && \
     rm /tmp/spark.tgz && \
