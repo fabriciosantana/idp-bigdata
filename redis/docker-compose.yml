@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+    networks:
+      - bigdatanetwork
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - $HOME/redis/data:/data
+    networks:
+      - bigdatanetwork
+networks:
+  bigdatanetwork:
+    external:
+      name: bigdatanetwork
