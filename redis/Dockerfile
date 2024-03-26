@@ -1,19 +1,29 @@
-FROM python:3.8-slim
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim-buster
 
-ENV FLASK_APP=app.py
+#ENV FLASK_APP=app.py
 
-# Define o diretório de trabalho
+# Set the working directory in the container to /app
 WORKDIR /app
 
-# Copia os arquivos de requisitos e instala as dependências
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# Install system dependencies required for python-ldap
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copia o restante dos arquivos da aplicação
-COPY . .
+# Add the current directory contents into the container at /app
+ADD . /app
 
-# Define a porta em que a aplicação será executada
+#COPY requirements.txt requirements.txt
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 5000 available to the world outside this container
 EXPOSE 5000
 
-# Define o comando para iniciar a aplicação
-CMD ["flask", "run", "--host=0.0.0.0", "--debug"]
+# Run app.py when the container launches
+CMD ["python", "app.py"]
+#CMD ["flask", "run", "--host=0.0.0.0", "--debug"]
+
