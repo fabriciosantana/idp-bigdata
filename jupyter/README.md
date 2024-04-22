@@ -77,7 +77,7 @@ docker-compose logs | grep 'token='
 
 ```bash
 docker exec -it <nome_do_contêiner> /bin/bash
-jupyter config password
+jupyter notebook password
 ```
 
 <!--
