@@ -27,9 +27,11 @@ services:
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
-      - "8081:8081"
+      - "8091:8081"
     depends_on: 
       - redis
+    networks:
+      - bigdatanetwork
 networks:
   bigdatanetwork:
     external:
