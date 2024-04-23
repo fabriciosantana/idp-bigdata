@@ -455,22 +455,53 @@ plt.show()
 ```python
 #Análise Multivariada: Query para calcular o número de docentes por região e grau acadêmico
 result = collection.aggregate([
-    {'$group': {
-        '_id': {'regiao': '$NO_REGIAO_IES', 'grau': 'Graduação'},
-        'count': {'$sum': '$QT_DOC_EX_GRAD'},
+    {'$facet': {
+        'Graduacao': [
+            {'$group': {
+                '_id': '$NO_REGIAO_IES',
+                'count': {'$sum': '$QT_DOC_EX_GRAD'}
+            }},
+            {'$project': {
+                '_id': {'regiao': '$_id', 'grau': 'Graduação'},
+                'count': 1
+            }}
+        ],
+        'Especializacao': [
+            {'$group': {
+                '_id': '$NO_REGIAO_IES',
+                'count': {'$sum': '$QT_DOC_EX_ESP'}
+            }},
+            {'$project': {
+                '_id': {'regiao': '$_id', 'grau': 'Especialização'},
+                'count': 1
+            }}
+        ],
+        'Mestrado': [
+            {'$group': {
+                '_id': '$NO_REGIAO_IES',
+                'count': {'$sum': '$QT_DOC_EX_MEST'}
+            }},
+            {'$project': {
+                '_id': {'regiao': '$_id', 'grau': 'Mestrado'},
+                'count': 1
+            }}
+        ],
+        'Doutorado': [
+            {'$group': {
+                '_id': '$NO_REGIAO_IES',
+                'count': {'$sum': '$QT_DOC_EX_DOUT'}
+            }},
+            {'$project': {
+                '_id': {'regiao': '$_id', 'grau': 'Doutorado'},
+                'count': 1
+            }}
+        ]
     }},
-    {'$group': {
-        '_id': {'regiao': '$NO_REGIAO_IES', 'grau': 'Especialização'},
-        'count': {'$sum': '$QT_DOC_EX_ESP'},
+    {'$project': {
+        'resultados': {'$setUnion': ['$Graduacao', '$Especializacao', '$Mestrado', '$Doutorado']}
     }},
-    {'$group': {
-        '_id': {'regiao': '$NO_REGIAO_IES', 'grau': 'Mestrado'},
-        'count': {'$sum': '$QT_DOC_EX_MEST'},
-    }},
-    {'$group': {
-        '_id': {'regiao': '$NO_REGIAO_IES', 'grau': 'Doutorado'},
-        'count': {'$sum': '$QT_DOC_EX_DOUT'},
-    }}
+    {'$unwind': '$resultados'},
+    {'$replaceRoot': {'newRoot': '$resultados'}}
 ])
 ```
 
@@ -492,7 +523,8 @@ df = pd.DataFrame(data)
 
 ```python
 # Realizando a análise de correlação
-corr = df.corr()
+df_encoded = pd.get_dummies(df, columns=['regiao', 'grau'])
+corr = df_encoded.corr()
 ```
 
 ```python
